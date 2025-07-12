@@ -7,6 +7,7 @@ import 'package:image/image.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'core/utils/util.dart';
 
+/// A class that implements fast neural style transfer using TFLite models.
 final class FastStyleTransferFlutter implements IFastStyleTransfer {
   Interpreter? _predictionInterpreter;
   Interpreter? _styleTransferInterpreter;
@@ -16,6 +17,7 @@ final class FastStyleTransferFlutter implements IFastStyleTransfer {
     this._styleTransferInterpreter,
   );
 
+  /// Factory constructor to initialize interpreters with given config.
   factory FastStyleTransferFlutter.init({
     required FastStyleTransferConfig config,
   }) {
@@ -27,11 +29,12 @@ final class FastStyleTransferFlutter implements IFastStyleTransfer {
     return instance;
   }
 
+  /// Loads interpreters based on the provided configuration.
   void _load(FastStyleTransferConfig config) async {
     final predictionOptions = InterpreterOptions()..threads = config.thread;
     final styleTransferOptions = InterpreterOptions()..threads = config.thread;
 
-    // Set GPU delegate
+    // Use GPU delegate for Android and iOS if specified
     if (config.useGPU) {
       if (Platform.isAndroid) {
         predictionOptions.addDelegate(GpuDelegateV2());
@@ -46,6 +49,7 @@ final class FastStyleTransferFlutter implements IFastStyleTransfer {
 
     final FastStyleLoaderConfig loaderConfig = config.loaderConfig;
 
+    // Load interpreters from asset, file, or memory
     if (loaderConfig is FastStyleAssetsLoaderConfig) {
       _predictionInterpreter = await Interpreter.fromAsset(
         loaderConfig.predictResource,
@@ -75,8 +79,12 @@ final class FastStyleTransferFlutter implements IFastStyleTransfer {
     }
   }
 
+  /// Runs style transfer on the input image and style.
+  ///
+  /// Returns a JPEG-encoded image as Uint8List.
   @override
   Future<Uint8List> run({required RunTransferRequest request}) async {
+    // Check interpreters are initialized
     if (_styleTransferInterpreter == null && _predictionInterpreter == null) {
       throw const FastStyleTransferException(
         msg: 'Call init before using this method',
@@ -87,6 +95,7 @@ final class FastStyleTransferFlutter implements IFastStyleTransfer {
     final Uint8List image = request.image;
     final Uint8List style = request.style;
 
+    // Preprocess the input images
     final prepareImageResult = await StyleTransferUtil.prepareImage(
       image: image,
       style: style,
@@ -95,6 +104,7 @@ final class FastStyleTransferFlutter implements IFastStyleTransfer {
     final Image imageImg = prepareImageResult.$1;
     final Image styleImg = prepareImageResult.$2;
 
+    // Convert image and style to normalized float matrices [0..1]
     final imageMatrix = List.generate(
       imageImg.height,
       (y) => List.generate(imageImg.width, (x) {
@@ -111,36 +121,36 @@ final class FastStyleTransferFlutter implements IFastStyleTransfer {
       }),
     );
 
-    // [1, 256, 256, 3]
+    // Prepare input for prediction model: [1, 256, 256, 3]
     final predictionInput = [styleMatrix];
 
-    // [1, 1, 1, 100]
+    // Allocate output tensor for prediction: [1, 1, 1, 100]
     final predictionOutput = [
       [
         [List<double>.filled(100, 0)],
       ],
     ];
 
-    // Run prediction inference
+    // Run the prediction interpreter to extract style features
     _predictionInterpreter!.run(predictionInput, predictionOutput);
 
+    // Prepare input for transfer model
     final transferInput = [
-      // image [1, 384, 384, 3]
-      [imageMatrix],
-      // style [1, 1, 1, 100]
-      predictionOutput,
+      [imageMatrix],      // [1, 384, 384, 3] - content image
+      predictionOutput,   // [1, 1, 1, 100] - style features
     ];
 
-    // [1, 384, 384, 3]
+    // Prepare output for transfer result: [1, 384, 384, 3]
     final transferOutput = [
       List.generate(384, (index) => List.filled(384, [0.0, 0.0, 0.0])),
     ];
 
+    // Run the style transfer interpreter
     _styleTransferInterpreter!.runForMultipleInputs(transferInput, {
       0: transferOutput,
     });
 
-    // Get first output tensor
+    // Extract float RGB values and convert them to 0-255 Uint8List
     final result = transferOutput.first;
 
     final buffer = Uint8List.fromList(
@@ -151,7 +161,7 @@ final class FastStyleTransferFlutter implements IFastStyleTransfer {
           .toList(),
     );
 
-    // Build image from matrix
+    // Convert to Image object and encode to JPEG
     final imageResult = encodeJpg(
       Image.fromBytes(
         width: StyleTransferUtil.imageSize,
@@ -161,9 +171,11 @@ final class FastStyleTransferFlutter implements IFastStyleTransfer {
       ),
     );
 
+    // Return as Uint8List
     return imageResult.buffer.asUint8List();
   }
 
+  /// Releases native interpreter resources.
   void close(){
     _predictionInterpreter?.close();
     _styleTransferInterpreter?.close();
