@@ -5,7 +5,7 @@ import 'package:fast_style_transfer_flutter/src/core/exception/export.dart';
 import 'package:fast_style_transfer_flutter/src/interface/fast_style_transfer.dart';
 import 'package:image/image.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
-import 'core/extension/util.dart';
+import 'core/utils/util.dart';
 
 final class FastStyleTransferFlutter implements IFastStyleTransfer {
   Interpreter? _predictionInterpreter;
