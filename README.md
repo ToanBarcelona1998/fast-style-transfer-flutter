@@ -1,39 +1,96 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Fast Style Transfer Flutter 🎨
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+A Flutter package for running **Fast Neural Style Transfer** using **TensorFlow Lite (TFLite)** models, enabling real-time image transformation on **Android** and **iOS** devices **locally** (no internet connection required).
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+> 💡 Based on the original [Fast Style Transfer](https://github.com/lengstrom/fast-style-transfer) by Logan Engstrom and inspired by [luiscib3r/style_transfer](https://github.com/luiscib3r/style_transfer). Special thanks to them!
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+---
 
-## Features
+## ✨ Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- Run **style transfer locally** with TFLite on mobile (Android & iOS)
+- Built with **Flutter** and uses **tflite_flutter**
+- Support for:
+    - Asset-based model loading
+    - File or memory model loading (flexible configuration)
+- Customizable interpreter thread count
+- Optional **GPU acceleration** for better performance
+- Outputs styled image as JPEG (`Uint8List`)
 
-## Getting started
+---
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+## 📸 Example
 
 ```dart
-const like = 'sample';
+final styleTransfer = FastStyleTransferFlutter.init(
+  config: FastStyleTransferConfig(
+    thread: 4,
+    useGPU: true,
+    loaderConfig: FastStyleAssetsLoaderConfig(
+      predictResource: 'models/predict.tflite',
+      styleTransferResource: 'models/transfer.tflite',
+    ),
+  ),
+);
+
+final resultImage = await styleTransfer.run(
+  request: RunTransferRequest(
+    image: imageBytes, // content image (Uint8List)
+    style: styleBytes, // style image (Uint8List)
+  ),
+);
+
+// Use resultImage as Uint8List (e.g., display or save)
 ```
 
-## Additional information
+## 🧠 How It Works
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+1. Loads **two models**:
+    - `predict.tflite`: extracts style features
+    - `transfer.tflite`: applies style to the input image
+2. Preprocesses the input content & style images
+3. Runs both models sequentially
+4. Returns JPEG-encoded image as `Uint8List`
+
+---
+
+## 📂 Supported Model Loading
+
+You can load models from:
+
+- Assets (recommended)
+- File path (`File`)
+- Raw bytes (`Uint8List`)
+
+---
+
+## ⚙️ Configuration
+
+```dart
+FastStyleTransferConfig(
+  thread: 4,          // Number of threads
+  useGPU: true,       // Use GPU if available (Android/iOS)
+  loaderConfig: FastStyleAssetsLoaderConfig(
+    predictResource: 'models/predict.tflite',
+    styleTransferResource: 'models/transfer.tflite',
+  ),
+)
+```
+
+## 📥 Model Download
+
+You can use pre-trained models provided by TensorFlow:
+
+- [magenta_arbitrary-image-stylization-v1-256_int8_prediction_1.tflite](https://storage.googleapis.com/download.tensorflow.org/models/tflite/task_library/style_transfer/android/magenta_arbitrary-image-stylization-v1-256_int8_prediction_1.tflite)
+- [magenta_arbitrary-image-stylization-v1-256_int8_transfer_1.tflite](https://storage.googleapis.com/download.tensorflow.org/models/tflite/task_library/style_transfer/android/magenta_arbitrary-image-stylization-v1-256_int8_transfer_1.tflite)
+
+These models are compatible with this package and ready to be used.
+
+You can also train or convert your own models based on:
+
+- Original: [Fast Style Transfer](https://github.com/lengstrom/fast-style-transfer)
+- Mobile conversion guide: [luiscib3r/style_transfer](https://github.com/luiscib3r/style_transfer)
+
+## 🙏 Credits
+•	Huge thanks to Logan Engstrom for the original Fast Style Transfer
+•	Special appreciation to luiscib3r for mobile adaptation inspiration and open-source contribution
