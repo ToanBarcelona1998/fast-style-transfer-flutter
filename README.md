@@ -92,5 +92,5 @@ You can also train or convert your own models based on:
 - Mobile conversion guide: [luiscib3r/style_transfer](https://github.com/luiscib3r/style_transfer)
 
 ## 🙏 Credits
-•	Huge thanks to Logan Engstrom for the original Fast Style Transfer.
-•	Special appreciation to luiscib3r for mobile adaptation inspiration and open-source contribution.
+- Huge thanks to Logan Engstrom for the original Fast Style Transfer.
+- Special appreciation to luiscib3r for mobile adaptation inspiration and open-source contribution.
