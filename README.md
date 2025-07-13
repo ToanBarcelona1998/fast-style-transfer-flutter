@@ -53,10 +53,10 @@ final resultImage = await styleTransfer.run(
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="screenshot/result0.jpg" width="591" alt="Screen 1"/>
-  <img src="screenshot/result1.jpg" width="591" alt="Screen 2"/>
-  <img src="screenshot/result2.jpg" width="591" alt="Screen 3"/>
-  <img src="screenshot/result3.jpg" width="591" alt="Screen 3"/>
+  <img src="screenshot/result0.jpg" style="max-width: 20%; margin: 5px;" alt="Screen 1"/>
+  <img src="screenshot/result1.jpg" style="max-width: 20%; margin: 5px;" alt="Screen 2"/>
+  <img src="screenshot/result2.jpg" style="max-width: 20%; margin: 5px;" alt="Screen 3"/>
+  <img src="screenshot/result3.jpg" style="max-width: 20%; margin: 5px;" alt="Screen 3"/>
 </p>
 
 ---
