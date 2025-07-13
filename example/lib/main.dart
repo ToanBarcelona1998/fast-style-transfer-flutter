@@ -73,66 +73,73 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black54,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child:
-                    result == null
-                        ? Center(
-                          child: ElevatedButton(
-                            onPressed: _onPickImage,
-                            child: Text('Pick image'),
-                          ),
-                        )
-                        : Image(image: MemoryImage(result!), fit: BoxFit.contain),
-              ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child:
+                  result == null
+                      ? Center(
+                        child: ElevatedButton(
+                          onPressed: _onPickImage,
+                          child: Text('Pick image'),
+                        ),
+                      )
+                      : Image(image: MemoryImage(result!), fit: BoxFit.contain),
+            ),
 
-              const SizedBox(height: 30),
+            const SizedBox(height: 30),
 
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 24
+                ),
+                height: 150,
                 child: Row(
                   children: List.generate(24, (index) {
-                    return Stack(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            _onSelectStyle(index);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                            child: Image(
-                              image: AssetImage('assets/styles/style$index.jpg'),
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Stack(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _onSelectStyle(index);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                              child: Image(
+                                image: AssetImage('assets/styles/style$index.jpg'),
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                        Positioned(
-                          top: 0,
-                          left: 0,
-                          child:
-                          _selectedIndex == index
-                              ? Icon(Icons.check, color: Colors.green, size: 24,)
-                              : const SizedBox(),
-                        ),
-                      ],
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            child:
+                            _selectedIndex == index
+                                ? Icon(Icons.check, color: Colors.green, size: 24,)
+                                : const SizedBox(),
+                          ),
+                        ],
+                      ),
                     );
                   }),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
