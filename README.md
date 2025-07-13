@@ -25,6 +25,20 @@ You can load models from:
 - File path (`File`)
 - Raw bytes (`Uint8List`)
 
+---
+
+## 🚀 Installation
+
+```yaml
+dependencies:
+  fast_style_transfer:
+    git:
+      url: https://github.com/ToanBarcelona1998/fast-style-transfer-flutter
+      
+```
+
+---
+
 
 ## 📸 Example
 
