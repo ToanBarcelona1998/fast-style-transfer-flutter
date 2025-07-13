@@ -6,18 +6,25 @@ A Flutter package for running **Fast Neural Style Transfer** using **TensorFlow 
 
 ---
 
-## ✨ Features
+## 🧠 How It Works
 
-- Run **style transfer locally** with TFLite on mobile (Android & iOS)
-- Built with **Flutter** and uses **tflite_flutter**
-- Support for:
-    - Asset-based model loading
-    - File or memory model loading (flexible configuration)
-- Customizable interpreter thread count
-- Optional **GPU acceleration** for better performance
-- Outputs styled image as JPEG (`Uint8List`)
+1. Loads **two models**:
+    - `predict.tflite`: extracts style features
+    - `transfer.tflite`: applies style to the input image
+2. Preprocesses the input content & style images
+3. Runs both models sequentially
+4. Returns JPEG-encoded image as `Uint8List`
 
 ---
+
+## 📂 Supported Model Loading
+
+You can load models from:
+
+- Assets (recommended)
+- File path (`File`)
+- Raw bytes (`Uint8List`)
+
 
 ## 📸 Example
 
@@ -43,39 +50,16 @@ final resultImage = await styleTransfer.run(
 // Use resultImage as Uint8List (e.g., display or save)
 ```
 
-## 🧠 How It Works
+## 📸 Screenshots
 
-1. Loads **two models**:
-    - `predict.tflite`: extracts style features
-    - `transfer.tflite`: applies style to the input image
-2. Preprocesses the input content & style images
-3. Runs both models sequentially
-4. Returns JPEG-encoded image as `Uint8List`
-
----
-
-## 📂 Supported Model Loading
-
-You can load models from:
-
-- Assets (recommended)
-- File path (`File`)
-- Raw bytes (`Uint8List`)
+<p align="center">
+  <img src="screenshot/result0.jpg" width="591" alt="Screen 1"/>
+  <img src="screenshot/result1.jpg" width="591" alt="Screen 2"/>
+  <img src="screenshot/result2.jpg" width="591" alt="Screen 3"/>
+  <img src="screenshot/result3.jpg" width="591" alt="Screen 3"/>
+</p>
 
 ---
-
-## ⚙️ Configuration
-
-```dart
-FastStyleTransferConfig(
-  thread: 4,          // Number of threads
-  useGPU: true,       // Use GPU if available (Android/iOS)
-  loaderConfig: FastStyleAssetsLoaderConfig(
-    predictResource: 'models/predict.tflite',
-    styleTransferResource: 'models/transfer.tflite',
-  ),
-)
-```
 
 ## 📥 Model Download
 
