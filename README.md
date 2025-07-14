@@ -31,10 +31,7 @@ You can load models from:
 
 ```yaml
 dependencies:
-  fast_style_transfer:
-    git:
-      url: https://github.com/ToanBarcelona1998/fast-style-transfer-flutter
-      
+  fast_style_transfer: ^0.0.1
 ```
 
 ---
