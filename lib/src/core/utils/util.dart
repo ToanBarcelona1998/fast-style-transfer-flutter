@@ -17,23 +17,15 @@ final class StyleTransferUtil {
 
     _validateImageDecodeError(imageImg, styleImg);
 
-    final List<Future<Uint8List>> futures = [];
     if (imageImg!.width != imageSize || imageImg.height != imageSize) {
-      final Future<Uint8List> resizedImageFuture = image.resizeImage(size: imageSize);
+      final Uint8List resizedImage = await image.resizeImage(size: imageSize);
 
-      futures.add(resizedImageFuture);
+      imageImg = decodeImage(resizedImage);
     }
     if (styleImg!.width != styleSize || styleImg.height != styleSize) {
-      final Future<Uint8List> resizedStyleFuture = style.resizeImage(size: styleSize);
+      final Uint8List resizedStyleFuture = await style.resizeImage(size: styleSize);
 
-      futures.add(resizedStyleFuture);
-    }
-
-    if(futures.isNotEmpty){
-      final List<Uint8List> resizedImages =  await Future.wait(futures);
-
-      imageImg = decodeImage(resizedImages[0]);
-      styleImg = decodeImage(resizedImages[1]);
+      styleImg = decodeImage(resizedStyleFuture);
 
       _validateImageDecodeError(imageImg, styleImg);
     }
