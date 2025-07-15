@@ -31,7 +31,7 @@ You can load models from:
 
 ```yaml
 dependencies:
-  fast_style_transfer: ^0.0.1
+   fast_style_transfer_flutter: ^0.0.2
 ```
 
 ---
