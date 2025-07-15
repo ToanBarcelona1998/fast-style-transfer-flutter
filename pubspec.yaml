@@ -1,6 +1,6 @@
 name: fast_style_transfer_flutter
 description: "A Flutter package for running **Fast Neural Style Transfer** using **TensorFlow Lite (TFLite)** models, enabling real-time image transformation on **Android** and **iOS** devices **locally** (no internet connection required)."
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/ToanBarcelona1998/fast-style-transfer-flutter
 
 environment:
