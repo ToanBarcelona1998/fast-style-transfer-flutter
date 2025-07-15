@@ -53,9 +53,11 @@ final class FastStyleTransferFlutter implements IFastStyleTransfer {
     if (loaderConfig is FastStyleAssetsLoaderConfig) {
       _predictionInterpreter = await Interpreter.fromAsset(
         loaderConfig.predictResource,
+        options: predictionOptions,
       );
       _styleTransferInterpreter = await Interpreter.fromAsset(
         loaderConfig.styleTransferResource,
+        options: styleTransferOptions
       );
     } else if (loaderConfig is FastStyleFileLoaderConfig) {
       _predictionInterpreter = Interpreter.fromFile(
